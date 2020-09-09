@@ -1,9 +1,3 @@
-provider "aws" {
-  region     = "us-east-1"
-  access_key = ""
-  secret_key = ""
-}
-
 data "aws_ami" "app_ami" {
   most_recent = true
   owners      = ["amazon"]
@@ -23,11 +17,8 @@ resource "aws_instance" "myec2" {
 
   provisioner "remote-exec" {
      inline = [
-       "sudo mkdir -p /var/www/html/",
-       "sudo yum install -y httpd",
-       "sudo service httpd start",
-       "sudo usermod -a -G apache ec2-user",
-       "sudo chown -R ec2-user:apache /var/www",
+       "sudo amazon-linux-extras install -y nginx1.12",
+       "sudo systemctl start nginx"
      ]
 
    connection {
@@ -37,14 +28,14 @@ resource "aws_instance" "myec2" {
      host = self.public_ip
    }
    }
-   root_block_device {
-    delete_on_termination = true   # effacer toutes les ressources
+  root_block_device {
+    delete_on_termination = true
   }
 
 }
 
 resource "aws_security_group" "allow_ssh_http_https" {
-  name        = "mohamed-sg"
+  name        = var.sg_name
   description = "Allow http and https inbound traffic"
 
   ingress {

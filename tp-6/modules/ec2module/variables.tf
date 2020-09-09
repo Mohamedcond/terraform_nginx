@@ -4,6 +4,12 @@ variable instancetype {
   default     = "t2.nano"
 }
 
+variable sg_name {
+  type        = string
+  description = "set sg name "
+  default     = "eazytraining-sg"
+}
+
 variable aws_common_tag {
   type        = map
   description = "Set aws tag"
